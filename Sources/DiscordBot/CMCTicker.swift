@@ -80,4 +80,5 @@ struct CMCTicker {
       self.percentChangeWeek = percentChangeWeek
       self.lastUpdated = lastUpdated
    }
+
 }

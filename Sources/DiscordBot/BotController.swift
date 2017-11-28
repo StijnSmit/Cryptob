@@ -8,12 +8,13 @@
 import Foundation
 import SwiftDiscord
 
-class BotController: DiscordClientDelegate {
+class BotController: DiscordClientDelegate, CommandHandler {
    var client: DiscordClient!
-   var globalData: CMCGlobalData!
+   var cmcController: CMCController!
    
    init() {
       self.client = DiscordClient(token: token, delegate: self, configuration: [.log(.info)])
+      self.cmcController = CMCController()
    }
    
    func connect() {
@@ -25,19 +26,42 @@ class BotController: DiscordClientDelegate {
    }
    
    func client(_ client: DiscordClient, didCreateMessage message: DiscordMessage) {
-      if message.content == "!market" {
-         let discordMessage = DiscordMessage(content: "", embed: nil)
-         message.channel?.send(discordMessage)
-      }
+       guard message.content.hasPrefix("!") else { return }
+
+       let commandArgs = String(message.content.dropFirst()).components(separatedBy: " ")
+       let command = commandArgs[0]
+
+       handleCommand(command.lowercased(), with: Array(commandArgs.dropFirst()), message: message)
    }
-   
-   func createGlobalData() {
-      CMCGlobalData.globalData() { (globalData, error) in
-         guard let globalData = globalData, error == nil else {
-            self.globalData = CMCGlobalData()
+
+   func handleCommand(_ command: String, with arguments: [String], message: DiscordMessage) {
+        print("got command: \(command)")
+
+/*        if let guild = message.channel?.guild, ignoreGuilds.contains(guild.id), !userOverrides.contains(message.author.id) {
+            print("Ignoring this guild")
             return
-         }
-         self.globalData = globalData
-      }
+        }
+        */
+
+        guard let command = Command(rawValue: command.lowercased()) else { return }
+        
+        switch command {
+        case .market:
+            handleMarket(with: arguments, message: message)
+        case .ticker:
+            handleTicker(with: arguments, message: message)
+        default:
+            print("Bad command \(command)")
+        }
+   }
+
+   func handleMarket(with arguments: [String], message: DiscordMessage) {
+       let response = cmcController.globalDataMessage()
+        message.channel?.send(DiscordMessage(content: response))
+   }
+
+   func handleTicker(with arguments: [String], message: DiscordMessage) {
+       let response = cmcController.tickerMessage(ticker: "TEST")
+        message.channel?.send(DiscordMessage(content: response))
    }
 }

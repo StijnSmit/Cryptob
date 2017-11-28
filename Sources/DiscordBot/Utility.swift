@@ -16,7 +16,7 @@ extension Formatter {
    }()
 }
 
-extension Integer {
+extension BinaryInteger {
    var formattedWithPoints: String {
       return Formatter.decimalPoints.string(for: self) ?? ""
    }
