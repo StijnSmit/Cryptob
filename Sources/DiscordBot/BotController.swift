@@ -37,12 +37,6 @@ class BotController: DiscordClientDelegate, CommandHandler {
    func handleCommand(_ command: String, with arguments: [String], message: DiscordMessage) {
         print("got command: \(command)")
 
-/*        if let guild = message.channel?.guild, ignoreGuilds.contains(guild.id), !userOverrides.contains(message.author.id) {
-            print("Ignoring this guild")
-            return
-        }
-        */
-
         guard let command = Command(rawValue: command.lowercased()) else { return }
         
         switch command {
@@ -61,7 +55,7 @@ class BotController: DiscordClientDelegate, CommandHandler {
    }
 
    func handleTicker(with arguments: [String], message: DiscordMessage) {
-       let response = cmcController.tickerMessage(ticker: "TEST")
+       let response = cmcController.tickerMessage(ticker: arguments)
         message.channel?.send(DiscordMessage(content: response))
    }
 }

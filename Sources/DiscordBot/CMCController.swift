@@ -14,9 +14,9 @@ enum BackendError: Error {
 
 // CoinMarketCap:
 struct CMC {
-   static let baseURL = "https://api.coinmarketcap.com/v1/"
-   static let global = "global/"
-   static let ticker = "ticker/"
+   static let baseURL = "https://api.coinmarketcap.com/v1"
+   static let global = "global"
+   static let ticker = "ticker"
 }
 
 class CMCController {
@@ -35,7 +35,7 @@ class CMCController {
             + "  / BTC Dominance: \(globalData.bitcoinPercentage) %"
    }
 
-   func tickerMessage(ticker: String) -> String {
+   func tickerMessage(ticker: [String]) -> String {
     return "Work In Progress :computer:"    
    }
 
