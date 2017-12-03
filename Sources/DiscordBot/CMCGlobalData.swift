@@ -49,45 +49,10 @@ struct CMCGlobalData {
       self.activeMarkets = activeMarkets
       self.lastUpdated = lastUpdated
    }
-   
-   static func globalData(completion: @escaping (CMCGlobalData?, Error?) -> ()) {
-      guard let url = URL(string: CMCGlobalData.endpoint()) else { print("Can't Make URL"); return }
-      let urlRequest = URLRequest(url: url)
-      print("URL: \(url)")
-      print("URLRequest: \(urlRequest)")
-      let session = URLSession.shared
-      let task = session.dataTask(with: urlRequest, completionHandler: {
-         (data, response, error) in
-         print("Returned from request")
-         guard error == nil else {
-            print("Error")
-            completion(nil, error)
-            return
-         }
-         guard let responseData = data else { print("Error: did not receivedata")
-            let error = BackendError.objectSerialization(reason: "No data in response")
-            completion(nil, error)
-            return
-         }
-         do {
-            print("DO")
-            if let json = try JSONSerialization.jsonObject(with: responseData, options: []) as? [String: Any] {
-               print("JSON")
-               print(json)
-               let globalData = CMCGlobalData(json: json)
-               print(globalData)
-               completion(globalData, nil)
-            } else {
-               print("Couldn't create GlobalData")
-               let error = BackendError.objectSerialization(reason: "Couldn't create a GlobalData object from the JSON")
-               completion(nil, error)
-            }
-         } catch {
-            completion(nil, error)
-            return
-         }
-         
-      })
-      task.resume()
+
+   func marketMessage() -> String {
+      return "Market Cap: $\(self.totalMarketCap.formattedWithPoints)"
+            + "  / 24h Vol: $\(self.todayVolume.formattedWithPoints)"
+            + "  / BTC Dominance: \(self.bitcoinPercentage) %"
    }
 }

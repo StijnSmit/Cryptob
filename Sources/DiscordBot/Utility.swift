@@ -16,6 +16,11 @@ extension Formatter {
    }()
 }
 
+extension Double {
+   var formattedWithPoints: String {
+      return Formatter.decimalPoints.string(for: self) ?? ""
+   }
+}
 extension BinaryInteger {
    var formattedWithPoints: String {
       return Formatter.decimalPoints.string(for: self) ?? ""

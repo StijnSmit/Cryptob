@@ -11,10 +11,12 @@ import SwiftDiscord
 class BotController: DiscordClientDelegate, CommandHandler {
    var client: DiscordClient!
    var cmcController: CMCController!
+   var network: Network!
    
    init() {
       self.client = DiscordClient(token: token, delegate: self, configuration: [.log(.info)])
-      self.cmcController = CMCController()
+      self.network = Network()
+      self.cmcController = CMCController(network: network)
    }
    
    func connect() {
@@ -50,12 +52,22 @@ class BotController: DiscordClientDelegate, CommandHandler {
    }
 
    func handleMarket(with arguments: [String], message: DiscordMessage) {
-       let response = cmcController.globalDataMessage()
-        message.channel?.send(DiscordMessage(content: response))
+       cmcController.globalDataMessage() { response in 
+           guard let response = response else { 
+                message.channel?.send(DiscordMessage(content: "Error"))
+                return
+           }
+            message.channel?.send(DiscordMessage(content: response))
+       }
    }
 
    func handleTicker(with arguments: [String], message: DiscordMessage) {
-       let response = cmcController.tickerMessage(ticker: arguments)
-        message.channel?.send(DiscordMessage(content: response))
+       cmcController.tickerMessage(input: arguments) { response in 
+            guard let response = response else {
+                message.channel?.send(DiscordMessage(content: "Error"))
+                return
+            }
+            message.channel?.send(DiscordMessage(content: response))
+       }
    }
 }

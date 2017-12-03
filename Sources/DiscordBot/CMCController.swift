@@ -22,40 +22,60 @@ struct CMC {
 class CMCController {
     var globalData: CMCGlobalData? = nil
     var tickers: [CMCTicker]!
+    var network: Network!
 
-    init() {
-        self.fetchGlobalData()
-        everyday()
+    init(network: Network) {
+        self.network = network
     }
 
-   func globalDataMessage() -> String {
-       guard let globalData = globalData else { return "" }
-      return "Market Cap: $\(globalData.totalMarketCap.formattedWithPoints)"
-            + "  / 24h Vol: $\(globalData.todayVolume.formattedWithPoints)"
-            + "  / BTC Dominance: \(globalData.bitcoinPercentage) %"
+   func globalDataMessage(completion: @escaping (String?) -> ()) {
+        self.getLatestGlobalData() { globalData in
+           guard let globalData = globalData else { completion(nil); return }
+           completion(globalData.marketMessage())
+        }
    }
 
-   func tickerMessage(ticker: [String]) -> String {
-    return "Work In Progress :computer:"    
+   func tickerMessage(input: [String], completion: @escaping (String?) -> ()) {
+       if input.count < 1 { print("InputCount not good"); completion(nil); return }
+       self.getTicker(name: (input.first)!) { ticker in 
+           guard let ticker = ticker else { print("Ticker can't be ticker"); completion(nil); return }
+           if input.count > 1 && input[1] == "detail" {
+               completion(ticker.detailMessage())
+           } else {
+               completion(ticker.message())
+           }
+       }
    }
 
-   func fetchGlobalData() {
+   func getLatestGlobalData(completion: @escaping (CMCGlobalData?) -> ()) {
         DispatchQueue.global().async {
-            CMCGlobalData.globalData() { (globalData, error) in
-                guard let globalData = globalData, error == nil else {
-                    return
+            self.network.globalData() { (json) in
+                guard let json = json, let globalData = CMCGlobalData(json: json) else { completion(nil); return }
+                DispatchQueue.main.async {
+                    completion(globalData)
                 }
-                self.globalData = globalData
             }
         }
    }
-   
+
+   func getTicker(name: String, completion: @escaping (CMCTicker?) -> ()) {
+        DispatchQueue.global().async {
+            self.network.ticker(name: name) { (json) in
+                guard let json = json, let ticker = CMCTicker(json: json) else { print("Ticker can't be ticker first"); completion(nil); return }
+                DispatchQueue.main.async {
+                    completion(ticker)
+                }
+           }
+        }
+   }
+/*
    func everyday() {
       Timer.scheduledTimer(timeInterval: 60, target: self,
           selector: #selector(fetchEveryday), userInfo: nil, repeats: true)
    }
 
    @objc func fetchEveryday() {
-        self.fetchGlobalData()
+       print("EVERYDAY")
    }
+   */
 }
