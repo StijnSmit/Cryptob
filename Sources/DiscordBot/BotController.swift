@@ -64,7 +64,7 @@ class BotController: DiscordClientDelegate, CommandHandler {
    func handleTicker(with arguments: [String], message: DiscordMessage) {
        cmcController.tickerMessage(input: arguments) { response in 
             guard let response = response else {
-                message.channel?.send(DiscordMessage(content: "Error"))
+                message.channel?.send(DiscordMessage(content: "Unknown"))
                 return
             }
             message.channel?.send(DiscordMessage(content: response))

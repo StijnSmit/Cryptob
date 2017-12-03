@@ -43,6 +43,7 @@ struct CMCTicker {
    }
    
    init?(json: [String: Any]) {
+       print(json)
       guard let id = json[CodingKeys.id.rawValue] as? String,
             let name = json[CodingKeys.name.rawValue] as? String,
             let symbol = json[CodingKeys.symbol.rawValue] as? String,
@@ -70,6 +71,9 @@ struct CMCTicker {
             let lastUpdated = Int(sLastUpdated) else {
             return nil
       }
+        print(percentChangeHour)
+        print(percentChangeDay)
+        print(percentChangeWeek)
       self.init(id: id, name: name, symbol: symbol, rank: rank, priceUSD: priceUSD, priceBTC: priceBTC, dayVolumeUSD: Int(dayVolumeUSD), marketCapUSD: Int(marketCapUSD), availableSupply: Int(availableSupply), totalSupply: Int(totalSupply), percentChangeHour: percentChangeHour, percentChangeDay: percentChangeDay, percentChangeWeek: percentChangeWeek, lastUpdated: lastUpdated)
    }
    
@@ -93,6 +97,9 @@ struct CMCTicker {
    }
 
     func message() -> String {
+        print(self.percentChangeHour)
+        print(self.percentChangeDay)
+        print(self.percentChangeWeek)
         return "\(self.rank)) \(self.name)/\(self.symbol):"
             + "   USD: $\(self.priceUSD.formattedWithPoints)"
             + " | BTC: \(self.priceBTC.formattedWithPoints)"
@@ -101,6 +108,9 @@ struct CMCTicker {
     }
 
     func detailMessage() -> String {
+        print(self.percentChangeHour)
+        print(self.percentChangeDay)
+        print(self.percentChangeWeek)
         return "\(self.rank)) \(self.name)/\(self.symbol):"
             + "   USD: $\(self.priceUSD.formattedWithPoints)"
             + " | BTC: \(self.priceBTC.formattedWithPoints)"

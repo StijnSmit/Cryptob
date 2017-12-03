@@ -45,13 +45,15 @@ class Network {
             return
         }
         guard let data = data, let _ = response else { completion(nil); return }
-        do {
-            let json = try JSONSerialization.jsonObject(with: data,
-                            options: JSONSerialization.ReadingOptions.mutableContainers) as! [String: Any?]
-            completion(json)
-        } catch {
-            completion(nil)
-        }
+        if let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 {
+            do {
+                let json = try JSONSerialization.jsonObject(with: data,
+                                options: JSONSerialization.ReadingOptions.mutableContainers) as! [String: Any?]
+                completion(json)
+            } catch {
+                completion(nil)
+            }
+        } else { completion(nil) }
     }
     func checkTickerResponse(data: Data?, response: URLResponse?, error: Error?, completion: @escaping ([String: Any]?) -> ()) {
         if let _ = error {
@@ -59,13 +61,15 @@ class Network {
             return
         }
         guard let data = data, let _ = response else { completion(nil); return }
-        do {
-            let json = try JSONSerialization.jsonObject(with: data,
-                            options: JSONSerialization.ReadingOptions.mutableContainers) as! [[String: Any?]]
-            completion(json.first)
-        } catch {
-            print("ERROR")
-            completion(nil)
-        }
+        if let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 {
+            do {
+                let json = try JSONSerialization.jsonObject(with: data,
+                                options: JSONSerialization.ReadingOptions.mutableContainers) as! [[String: Any?]]
+                completion(json.first)
+            } catch {
+                print("ERROR")
+                completion(nil)
+            }
+        } else { completion(nil) }
     }
 }
