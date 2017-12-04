@@ -1,4 +1,4 @@
-# DiscordBot
+# Cryptob
 
 A description of this package.
 

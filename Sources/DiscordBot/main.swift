@@ -1,6 +1,5 @@
+import CoreFoundation
 import Foundation
-
-let queue = DispatchQueue(label: "Async Read")
 
 let bot = BotController()
 

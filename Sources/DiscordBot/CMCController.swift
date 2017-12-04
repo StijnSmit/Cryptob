@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Dispatch
 
 enum BackendError: Error {
    case urlError(reason: String)
