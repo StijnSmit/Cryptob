@@ -87,6 +87,6 @@ class CMCController {
    }
 
    @objc func fetchEveryday() {
-      self.symbolStorage.fetchLatest
+      self.symbolStorage.fetchLatestSymbols()
    }
 }
