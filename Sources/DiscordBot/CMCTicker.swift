@@ -16,13 +16,13 @@ struct CMCTicker {
    var rank: Int
    var priceUSD: Double
    var priceBTC: Double
-   var dayVolumeUSD: Int
-   var marketCapUSD: Int
-   var availableSupply: Int
-   var totalSupply: Int
-   var percentChangeHour: Double
-   var percentChangeDay: Double
-   var percentChangeWeek: Double
+   var dayVolumeUSD: Int?
+   var marketCapUSD: Int?
+   var availableSupply: Int?
+   var totalSupply: Int?
+   var percentChangeHour: Double?
+   var percentChangeDay: Double?
+   var percentChangeWeek: Double?
    var lastUpdated: Int
    
    enum CodingKeys: String {
@@ -43,7 +43,6 @@ struct CMCTicker {
    }
    
    init?(json: [String: Any]) {
-       print(json)
       guard let id = json[CodingKeys.id.rawValue] as? String,
             let name = json[CodingKeys.name.rawValue] as? String,
             let symbol = json[CodingKeys.symbol.rawValue] as? String,
@@ -53,33 +52,54 @@ struct CMCTicker {
             let priceUSD = Double(sPriceUSD),
             let sPriceBTC = json[CodingKeys.priceBTC.rawValue] as? String,
             let priceBTC = Double(sPriceBTC),
-            let sDayVolumeUSD = json[CodingKeys.dayVolumeUSD.rawValue] as? String,
-            let dayVolumeUSD = Double(sDayVolumeUSD),
-            let sMarketCapUSD = json[CodingKeys.marketCapUSD.rawValue] as? String,
-            let marketCapUSD = Double(sMarketCapUSD),
-            let sAvailableSupply = json[CodingKeys.availableSupply.rawValue] as? String,
-            let availableSupply = Double(sAvailableSupply),
-            let sTotalSupply = json[CodingKeys.totalSupply.rawValue] as? String,
-            let totalSupply = Double(sTotalSupply),
-            let sPercentChangeHour = json[CodingKeys.percentChangeHour.rawValue] as? String,
-            let percentChangeHour = Double(sPercentChangeHour),
-            let sPercentChangeDay = json[CodingKeys.percentChangeDay.rawValue] as? String,
-            let percentChangeDay = Double(sPercentChangeDay),
-            let sPercentChangeWeek = json[CodingKeys.percentChangeWeek.rawValue] as? String,
-            let percentChangeWeek = Double(sPercentChangeWeek),
             let sLastUpdated = json[CodingKeys.lastUpdated.rawValue] as? String,
             let lastUpdated = Int(sLastUpdated) else {
             return nil
       }
-        print(percentChangeHour)
-        print(percentChangeDay)
-        print(percentChangeWeek)
-      self.init(id: id, name: name, symbol: symbol, rank: rank, priceUSD: priceUSD, priceBTC: priceBTC, dayVolumeUSD: Int(dayVolumeUSD), marketCapUSD: Int(marketCapUSD), availableSupply: Int(availableSupply), totalSupply: Int(totalSupply), percentChangeHour: percentChangeHour, percentChangeDay: percentChangeDay, percentChangeWeek: percentChangeWeek, lastUpdated: lastUpdated)
+        var dayVolumeUSD: Int? = nil
+        if let sDayVolumeUSD = json[CodingKeys.dayVolumeUSD.rawValue] as? String {
+            dayVolumeUSD = Int(Double(sDayVolumeUSD)!)
+        }
+
+        var marketCapUSD: Int? = nil
+        if let sMarketCapUSD = json[CodingKeys.marketCapUSD.rawValue] as? String {
+            marketCapUSD = Int(Double(sMarketCapUSD)!)
+        }
+
+        var availableSupply: Int? = nil
+        if let sAvailableSupply = json[CodingKeys.availableSupply.rawValue] as? String {
+            availableSupply = Int(Double(sAvailableSupply)!)
+        }
+
+        var totalSupply: Int? = nil
+        if let sTotalSupply = json[CodingKeys.totalSupply.rawValue] as? String {
+            totalSupply = Int(Double(sTotalSupply)!)
+        }
+
+        var percentChangeHour: Double? = nil
+        if let sPercentChangeHour = json[CodingKeys.percentChangeHour.rawValue] as? String {
+            percentChangeHour = Double(sPercentChangeHour)
+        }
+
+        var percentChangeDay: Double? = nil
+        if let sPercentChangeDay = json[CodingKeys.percentChangeDay.rawValue] as? String {
+            percentChangeDay = Double(sPercentChangeDay)
+        }
+
+        var percentChangeWeek: Double? = nil
+        if let sPercentChangeWeek = json[CodingKeys.percentChangeWeek.rawValue] as? String {
+            percentChangeWeek = Double(sPercentChangeWeek)
+        }
+
+      self.init(id: id, name: name, symbol: symbol, rank: rank, priceUSD: priceUSD, priceBTC: priceBTC,
+          dayVolumeUSD: dayVolumeUSD, marketCapUSD: marketCapUSD, availableSupply: availableSupply,
+          totalSupply: totalSupply, percentChangeHour: percentChangeHour, percentChangeDay: percentChangeDay,
+          percentChangeWeek: percentChangeWeek, lastUpdated: lastUpdated)
    }
    
-   init(id: String, name: String, symbol: String, rank: Int, priceUSD: Double, priceBTC: Double, dayVolumeUSD: Int,
-        marketCapUSD: Int, availableSupply: Int, totalSupply: Int, percentChangeHour: Double, percentChangeDay: Double,
-        percentChangeWeek: Double, lastUpdated: Int) {
+   init(id: String, name: String, symbol: String, rank: Int, priceUSD: Double, priceBTC: Double, dayVolumeUSD: Int?,
+        marketCapUSD: Int?, availableSupply: Int?, totalSupply: Int?, percentChangeHour: Double?, percentChangeDay: Double?,
+        percentChangeWeek: Double?, lastUpdated: Int) {
       self.id = id
       self.name = name
       self.symbol = symbol
@@ -97,27 +117,44 @@ struct CMCTicker {
    }
 
     func statusMessage() -> String {
-        print(self.percentChangeHour)
-        print(self.percentChangeDay)
-        print(self.percentChangeWeek)
-        return "\(self.rank)) \(self.name)/\(self.symbol):"
-            + "   USD: $\(self.priceUSD.formattedWithPoints)"
-            + " | BTC: \(self.priceBTC.formattedWithPoints)"
-            + "  / Change (24h): \(self.percentChangeDay)%,  (7d): \(self.percentChangeWeek)%"
-            + "  / Market Cap: $\(self.marketCapUSD.formattedWithPoints)"
+        var message = "\(self.rank)) \(self.name)/\(self.symbol):"
+        message += "   USD: $\(self.priceUSD.formattedWithPoints)"
+        message += " | BTC: \(self.priceBTC.formattedWithPoints)"
+        if let day = self.percentChangeDay, let week = self.percentChangeWeek {
+            message += "  / Change (24h): \(day)%,  (7d): \(week)%"
+        }
+        if let cap = self.marketCapUSD { 
+            message += "  / Market Cap: $\(cap.formattedWithPoints)"
+        }
+
+        return message
     }
 
     func detailMessage() -> String {
-        print(self.percentChangeHour)
-        print(self.percentChangeDay)
-        print(self.percentChangeWeek)
-        return "\(self.rank)) \(self.name)/\(self.symbol):"
-            + "   USD: $\(self.priceUSD.formattedWithPoints)"
-            + " | BTC: \(self.priceBTC.formattedWithPoints)"
-            + "  / Change (1h): \(self.percentChangeHour)%,  (24h): \(self.percentChangeDay)%,  (7d): \(self.percentChangeWeek)%"
-            + "  / 24h Volume USD: $\(self.dayVolumeUSD.formattedWithPoints)"
-            + "  / Market Cap: $\(self.marketCapUSD.formattedWithPoints)"
-            + "  / Available Supply: \(self.availableSupply.formattedWithPoints) \(self.symbol)"
-            + "  / Circulating Supply: \(self.totalSupply.formattedWithPoints) \(self.symbol)"
+        var message = "\(self.rank)) \(self.name)/\(self.symbol):"
+        message += "   USD: $\(self.priceUSD.formattedWithPoints)"
+        message += " | BTC: \(self.priceBTC.formattedWithPoints)"
+
+        if let hour = self.percentChangeHour, let day = self.percentChangeDay, let week = self.percentChangeWeek {
+            message += "  / Change (1h): \(hour)%,  (24h): \(day)%,  (7d): \(week)%"
+        }
+
+        if let volume = self.dayVolumeUSD {
+            message += "  / 24h Volume USD: $\(volume.formattedWithPoints)"
+        }
+
+        if let cap = self.marketCapUSD {
+            message += "  / Market Cap: $\(cap.formattedWithPoints)"
+        }
+
+        if let available = self.availableSupply {
+            message += "  / Available Supply: \(available.formattedWithPoints) \(self.symbol)"
+        }
+
+        if let total = self.totalSupply {
+            message += "  / Circulating Supply: \(total.formattedWithPoints) \(self.symbol)"
+        }
+
+        return message
     }
 }

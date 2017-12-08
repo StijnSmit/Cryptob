@@ -15,7 +15,6 @@ class CMCSymbolStorage {
       }
       
       init?(json: [String: Any]) {
-         print(json)
          guard let id = json[CodingKeys.id.rawValue] as? String,
             let name = json[CodingKeys.name.rawValue] as? String,
             let symbol = json[CodingKeys.symbol.rawValue] as? String else {

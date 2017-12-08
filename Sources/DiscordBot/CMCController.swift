@@ -29,6 +29,7 @@ class CMCController {
       self.network = network
       self.symbolStorage = CMCSymbolStorage(network: network)
       self.symbolStorage.fetchLatestSymbols()
+      self.everyday()
     }
 
    func globalDataMessage(completion: @escaping (String?) -> ()) {
@@ -82,8 +83,7 @@ class CMCController {
    }
 
    func everyday() {
-//      Timer.scheduledTimer(timeInterval: day, target: self,
-//          selector: #selector(fetchEveryday), userInfo: nil, repeats: true)
+      Timer.scheduledTimer(timeInterval: day, target: self, selector: #selector(fetchEveryday), userInfo: nil, repeats: true)
    }
 
    @objc func fetchEveryday() {
