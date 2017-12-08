@@ -57,7 +57,7 @@ class CMCSymbolStorage {
     }
 
     func getSymbol(for key: String) -> String {
-        let symbol = symbols.filter { $0.1.contains(key) }.first?.0 
+      let symbol = symbols.filter { $0.1.contains({$0.caseInsensitiveCompare(key) == .orderedSame}) }.first?.0
         if let symbol = symbol {
             return symbol
         }

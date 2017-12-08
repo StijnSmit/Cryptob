@@ -82,11 +82,11 @@ class CMCController {
    }
 
    func everyday() {
-      Timer.scheduledTimer(timeInterval: day, target: self,
-          selector: #selector(fetchEveryday), userInfo: nil, repeats: true)
+//      Timer.scheduledTimer(timeInterval: day, target: self,
+//          selector: #selector(fetchEveryday), userInfo: nil, repeats: true)
    }
 
    @objc func fetchEveryday() {
-      self.symbolStorage.fetchLatestSymbols()
+      self.symbolStorage.fetchLatest
    }
 }
