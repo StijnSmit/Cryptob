@@ -40,10 +40,10 @@ class CMCSymbolStorage {
     }
 
     func fetchLatestSymbols() {
-      var preSymbols: [String: [String]]
+      var preSymbols: [String: [String]] = [:]
       DispatchQueue.global().async {
          self.network.allTickers() { (tickers) in
-            guard let tickers = tickers as? [[String: Any]] else { return }
+            guard let tickers = tickers else { return }
             for ticker in tickers {
                if let symbol = CMCSymbol(json: ticker) {
                   preSymbols[symbol.id] = [symbol.id, symbol.name, symbol.symbol]

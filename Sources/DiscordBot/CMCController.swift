@@ -26,8 +26,9 @@ class CMCController {
     var network: Network!
 
     init(network: Network) {
-        self.network = network
+      self.network = network
       self.symbolStorage = CMCSymbolStorage(network: network)
+      self.symbolStorage.fetchLatestSymbols()
     }
 
    func globalDataMessage(completion: @escaping (String?) -> ()) {
