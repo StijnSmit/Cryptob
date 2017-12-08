@@ -22,11 +22,12 @@ struct CMC {
 
 class CMCController {
     var globalData: CMCGlobalData? = nil
-    var tickers: [CMCTicker]!
+   var symbolStorage: CMCSymbolStorage!
     var network: Network!
 
     init(network: Network) {
         self.network = network
+      self.symbolStorage = CMCSymbolStorage(network: network)
     }
 
    func globalDataMessage(completion: @escaping (String?) -> ()) {
@@ -69,7 +70,8 @@ class CMCController {
 
    func getTicker(name: String, completion: @escaping (CMCTicker?) -> ()) {
         DispatchQueue.global().async {
-            self.network.ticker(name: name) { (json) in
+         let symbol = symbolStorage.getSymbol(for: name)
+            self.network.ticker(symbol: symbol) { (json) in
                 guard let json = json, let ticker = CMCTicker(json: json) else { print("Ticker can't be ticker first"); completion(nil); return }
                 DispatchQueue.main.async {
                     completion(ticker)
@@ -77,14 +79,13 @@ class CMCController {
            }
         }
    }
-/*
+
    func everyday() {
-      Timer.scheduledTimer(timeInterval: 60, target: self,
+      Timer.scheduledTimer(timeInterval: day, target: self,
           selector: #selector(fetchEveryday), userInfo: nil, repeats: true)
    }
 
    @objc func fetchEveryday() {
-       print("EVERYDAY")
+      self.symbolStorage.fetchLatestSymbols()
    }
-   */
 }
