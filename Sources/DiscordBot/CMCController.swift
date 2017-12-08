@@ -42,7 +42,7 @@ class CMCController {
       self.getTicker(name: (input.first)!) { ticker in
          guard let ticker = ticker else { print("Ticker can't be ticker"); completion(nil); return }
          if type == "status" {
-            completion(ticker.message())
+            completion(ticker.statusMessage())
          } else if type == "detail" {
             completion(ticker.detailMessage())
          }
@@ -70,7 +70,7 @@ class CMCController {
 
    func getTicker(name: String, completion: @escaping (CMCTicker?) -> ()) {
         DispatchQueue.global().async {
-         let symbol = symbolStorage.getSymbol(for: name)
+         let symbol = self.symbolStorage.getSymbol(for: name)
             self.network.ticker(symbol: symbol) { (json) in
                 guard let json = json, let ticker = CMCTicker(json: json) else { print("Ticker can't be ticker first"); completion(nil); return }
                 DispatchQueue.main.async {

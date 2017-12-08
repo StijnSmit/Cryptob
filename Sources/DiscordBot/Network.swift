@@ -22,7 +22,7 @@ class Network {
       }
       var urlComponents = URLComponents(string: url)!
       for parameter in parameters {
-         if let vlaue = parameter.value as? Int {
+         if let value = parameter.value as? Int {
             urlComponents.queryItems = [URLQueryItem(name: parameter.key, value: value)]
          }
       }
@@ -47,8 +47,8 @@ class Network {
         task.resume()
     }
 
-    func allTickers(completion: @escaping ([String: Any]?) -> ()) {
-      let request = createRequest(baseURL: CMC.baseURL, endPoints: [CMC.ticker], parametes: ["limit": 0])
+    func allTickers(completion: @escaping ([[String: Any]]?) -> ()) {
+      let request = createRequest(baseURL: CMC.baseURL, endPoints: [CMC.ticker], parameters: ["limit": 0])
         let task = session.dataTask(with: request) { (data, response, error) in
             self.checkTickerResponse(data: data, response: response, error: error, completion: completion) 
         }

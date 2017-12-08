@@ -2,7 +2,7 @@ import CoreFoundation
 import Dispatch
 import Foundation
 
-struct CMCSymbolStorage {
+class CMCSymbolStorage {
    struct CMCSymbol {
       var id: String
       var name: String
@@ -42,10 +42,10 @@ struct CMCSymbolStorage {
     func fetchLatestSymbols() {
       var preSymbols: [String: [String]]
       DispatchQueue.global().async {
-         self.network.allTickers() { (json) in
-            guard let tickers = json as? [[String: Any]] else { completion(nil); return }
+         self.network.allTickers() { (tickers) in
+            guard let tickers = tickers as? [[String: Any]] else { return }
             for ticker in tickers {
-               if let symbol = CMCSymbol(json: json) {
+               if let symbol = CMCSymbol(json: ticker) {
                   preSymbols[symbol.id] = [symbol.id, symbol.name, symbol.symbol]
                }
             }
