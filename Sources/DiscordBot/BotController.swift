@@ -44,8 +44,10 @@ class BotController: DiscordClientDelegate, CommandHandler {
         switch command {
         case .market:
             handleMarket(with: arguments, message: message)
-        case .ticker:
-            handleTicker(with: arguments, message: message)
+        case .status:
+            handleStatus(with: arguments, message: message)
+        case .detail:
+            handleDetail(with: arguments, message: message)
         default:
             print("Bad command \(command)")
         }
@@ -61,13 +63,23 @@ class BotController: DiscordClientDelegate, CommandHandler {
        }
    }
 
-   func handleTicker(with arguments: [String], message: DiscordMessage) {
-       cmcController.tickerMessage(input: arguments) { response in 
+   func handleStatus(with arguments: [String], message: DiscordMessage) {
+       cmcController.statusMessage(input: arguments) { response in
             guard let response = response else {
                 message.channel?.send(DiscordMessage(content: "Unknown"))
                 return
             }
             message.channel?.send(DiscordMessage(content: response))
        }
+   }
+   
+   func handleDetail(with arguments: [String], message: DiscordMessage) {
+      cmcController.detailMessage(input: arguments) { response in
+         guard let response = response else {
+            message.channel?.send(DiscordMessage(content: "Unknown"))
+            return
+         }
+         message.channel?.send(DiscordMessage(content: response))
+      }
    }
 }

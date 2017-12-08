@@ -96,7 +96,7 @@ struct CMCTicker {
       self.lastUpdated = lastUpdated
    }
 
-    func message() -> String {
+    func statusMessage() -> String {
         print(self.percentChangeHour)
         print(self.percentChangeDay)
         print(self.percentChangeWeek)

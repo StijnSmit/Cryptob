@@ -3,7 +3,8 @@ import SwiftDiscord
 
 enum Command: String {
     case market = "market"
-    case ticker = "status"
+    case status = "status"
+    case detail = "detail"
 }
 
 protocol CommandHandler {

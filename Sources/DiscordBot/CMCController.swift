@@ -35,17 +35,25 @@ class CMCController {
            completion(globalData.marketMessage())
         }
    }
+   
+   private func tickerMessage(type: String, input: [String], completion: @escaping (String?) -> ()) {
+      if input.count < 1 { print("InputCount not good"); completion(nil); return }
+      self.getTicker(name: (input.first)!) { ticker in
+         guard let ticker = ticker else { print("Ticker can't be ticker"); completion(nil); return }
+         if type == "status" {
+            completion(ticker.message())
+         } else if type == "detail" {
+            completion(ticker.detailMessage())
+         }
+      }
+   }
 
-   func tickerMessage(input: [String], completion: @escaping (String?) -> ()) {
-       if input.count < 1 { print("InputCount not good"); completion(nil); return }
-       self.getTicker(name: (input.first)!) { ticker in 
-           guard let ticker = ticker else { print("Ticker can't be ticker"); completion(nil); return }
-           if input.count > 1 && input[1] == "detail" {
-               completion(ticker.detailMessage())
-           } else {
-               completion(ticker.message())
-           }
-       }
+   func statusMessage(input: [String], completion: @escaping (String?) -> ()) {
+      self.tickerMessage(type: "status", input: input, completion: completion)
+   }
+   
+   func detailMessage(input: [String], completion: @escaping (String?) -> ()) {
+      self.tickerMessage(type: "detail", input: input, completion: completion)
    }
 
    func getLatestGlobalData(completion: @escaping (CMCGlobalData?) -> ()) {
